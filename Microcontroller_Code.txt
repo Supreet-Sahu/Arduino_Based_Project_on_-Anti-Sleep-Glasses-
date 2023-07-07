@@ -1,0 +1,59 @@
+$mod51
+org 000h
+
+; Set P1 and P3 ports as inputs
+mov p1, #0ffh    ; Set P1 to 0xFF, all pins as inputs
+mov P3, #0ffh    ; Set P3 to 0xFF, all pins as inputs
+
+; Loop until P1.0 is high
+nex3: jb p1.0, nex3    ; Jump to nex3 if P1.0 is low (loop until P1.0 is high)
+
+; Call delay_1s subroutine for approximately 1 second delay
+acall delay_1s
+
+; Check P1.0 again
+jb p1.0, nex3    ; Jump to nex3 if P1.0 is low (continue looping until P1.0 is high)
+
+; Call delay_1s subroutine for another approximately 1 second delay
+acall delay_1s
+
+; Check P1.0 one more time
+jb p1.0,nex3    ; Jump to nex3 if P1.0 is low (continue looping until P1.0 is high)
+
+; Call the buzzer subroutine
+acall buzzer
+
+; Jump back to the nex3 label, creating an infinite loop
+sjmp nex3
+
+; Subroutine to control the buzzer
+buzzer: clr p1.1    ; Clear P1.1 to turn off the buzzer
+acall delay    ; Short delay
+acall delay    ; Short delay
+setb p1.1      ; Set P1.1 to turn on the buzzer
+acall delay_1s ; Delay for approximately 1 second
+ret            ; Return from the subroutine
+
+; Subroutine for a delay of approximately 1 millisecond
+delay:
+mov r0, #125d  ; Set r0 to 125
+l3: mov r1, #60d ; Set r1 to 60
+l2: mov r2, #120d ; Set r2 to 120
+l1: djnz r2, l1  ; Decrement r2 and jump if not zero to l1
+djnz r1, l2     ; Decrement r1 and jump if not zero to l2
+djnz r0, l3     ; Decrement r0 and jump if not zero to l3
+ret             ; Return from the subroutine
+
+; Subroutine for a delay of approximately 1 second
+delay_1s:
+using 2        ; Use register bank 2
+mov r0, #202d  ; Set r0 to 202
+xa3: mov r1, #118d ; Set r1 to 118
+xa2: mov r2, #7d ; Set r2 to 7
+xa1: djnz r2, xa1 ; Decrement r2 and jump if not zero to xa1
+djnz r1, xa2    ; Decrement r1 and jump if not zero to xa2
+djnz r0, xa3    ; Decrement r0 and jump if not zero to xa3
+using 0        ; Switch back to register bank 0
+ret            ; Return from the subroutine
+
+en             ; End of the code

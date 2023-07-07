@@ -1,0 +1,31 @@
+#define SENSE A0   // Define the constant SENSE as the analog input A0
+
+void setup()
+{
+  pinMode(SENSE, INPUT);         // Set SENSE pin as input
+  pinMode(2, OUTPUT);            // Set pin 2 as output
+  pinMode(LED_BUILTIN, OUTPUT);  // Set the built-in LED pin as output
+}
+
+void loop()
+{
+  if (digitalRead(SENSE))        // If the SENSE pin is high
+  {
+    digitalWrite(LED_BUILTIN, LOW);  // Turn off the built-in LED
+    pinMode(2, LOW);                 // Set pin 2 as LOW
+  }
+  else                          // If the SENSE pin is low
+  {
+    delay(2000);                // Delay for 2000 milliseconds (2 seconds)
+    if (digitalRead(SENSE))    // If the SENSE pin is high after the delay
+    {
+      digitalWrite(LED_BUILTIN, LOW);  // Turn off the built-in LED
+      pinMode(2, LOW);                 // Set pin 2 as LOW
+    }
+    else                      // If the SENSE pin is still low after the delay
+    {
+      digitalWrite(LED_BUILTIN, HIGH);  // Turn on the built-in LED
+      pinMode(2, HIGH);                 // Set pin 2 as HIGH
+    }
+  }
+}
